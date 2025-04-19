@@ -15,8 +15,8 @@ localparam [2:0]
     START_MOD   = 3'd1,    // Стартовая модуляция
     START_SPACE = 3'd2,    // Стартовая пауза
     ACTIVE      = 3'd3,    // Активная передача бита
-    PAUSE       = 3'd4;    // Пауза между битами
-
+    PAUSE       = 3'd4,    // Пауза между битами
+    GAP		= 3'd5;
 //===============================================
 // Параметры временных интервалов
 //===============================================
@@ -27,8 +27,8 @@ localparam
 
     CARRIER_DIV = CLK_FREQ/(CARRIER_FREQ*2), // 347
     DATA_DIV    = CLK_FREQ/(DATA_RATE*2), // 10416
-    START_TICKS = CLK_FREQ*218737/50_000_000; // 109368,5 (4,37475ms)
-
+    START_TICKS = CLK_FREQ*1000000/4370, // 109250 (4,37475ms)
+    STOP_TICKS  = CLK_FREQ/10; // 2500000 (100 ms)
 //===============================================
 // Генерация тактовых сигналов
 //===============================================
@@ -77,6 +77,7 @@ wire modulation = carrier_36k & carrier_1200;
 reg [31:0] shift_reg;
 reg [5:0]  bit_cnt;
 reg [23:0] main_cnt;
+reg [27:0] gap_cnt;
 reg [2:0]  state;
 
 always @(posedge clk or posedge rst) begin
@@ -86,6 +87,7 @@ always @(posedge clk or posedge rst) begin
         shift_reg <= 0;
         bit_cnt   <= 0;
         main_cnt  <= 0;
+	gap_cnt   <= 0;
         state     <= IDLE;
     end else begin
         case(state)
@@ -137,13 +139,23 @@ always @(posedge clk or posedge rst) begin
                     shift_reg <= {1'b0, shift_reg[31:1]}; // добавляет 0 слева
                     bit_cnt   <= bit_cnt + 1;
                     if(bit_cnt == 31) begin
-                        ready <= 1'b1;
-                        state <= IDLE;
+                        state <= GAP;
+			gap_cnt <= 1'b0;
                     end else begin
                         state <= ACTIVE;
                     end
                 end else begin
                     main_cnt <= main_cnt + 1;
+                end
+            end
+
+	    GAP: begin
+                ir_output <= 1'b0;
+                if(gap_cnt == STOP_TICKS-1) begin
+                    ready <= 1'b1;
+                    state <= IDLE;
+                end else begin
+                    gap_cnt <= gap_cnt + 1;
                 end
             end
         endcase
