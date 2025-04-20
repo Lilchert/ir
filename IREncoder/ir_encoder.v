@@ -1,29 +1,29 @@
 module ir_encoder (
-    input wire rst,        // Сброс
-    input wire clk,        // 25 MHz
-    input wire [31:0] cmd, // Команда для передачи
-    input wire valid,      // Сигнал валидности
-    output reg ready,      // Готовность
-    output reg ir_output   // Выход ИК-сигнала
+    input wire rst,        // Reset
+    input wire clk,        // 25 MHz clock
+    input wire [31:0] cmd, // Command to transmit
+    input wire valid,      // Valid signal
+    output reg ready,      // Ready signal
+    output reg ir_output   // IR output signal
 );
 
 //===============================================
 // Параметры состояний
 //===============================================
 localparam [2:0]
-    IDLE        = 3'd0,    // Ожидание команды
-    START_MOD   = 3'd1,    // Стартовая модуляция
-    START_SPACE = 3'd2,    // Стартовая пауза
-    ACTIVE      = 3'd3,    // Активная передача бита
-    PAUSE       = 3'd4,    // Пауза между битами
-    GAP		= 3'd5;    // Пауза между командами
+    IDLE        = 3'd0,    // Waiting for command
+    START_MOD   = 3'd1,    // Start modulation
+    START_SPACE = 3'd2,    // Start pause
+    ACTIVE      = 3'd3,    // Active bit transfer
+    PAUSE       = 3'd4,    // Pause between bits
+    GAP		= 3'd5;    // Pause between commands
 //===============================================
 // Параметры временных интервалов
 //===============================================
 localparam
-    //CLK_FREQ     = 25_000_000, Тактовая частота
-    //CARRIER_FREQ = 36_000, Несущая частота
-    //DATA_RATE    = 900, Огибающая частота
+    //CLK_FREQ     = 25_000_000, Clock frequency
+    //CARRIER_FREQ = 36_000, Carrier frequency
+    //DATA_RATE    = 900, Envelope frequency
 
     CARRIER_DIV = 347, // 25000000/(36000*2)
     DATA_DIV    = 13888, // 25000000/(900*2)
@@ -31,7 +31,7 @@ localparam
     STOP_TICKS  = 5000000; //  (200 ms) 25000000/1000000*200000
 
 //===============================================
-// Генерация тактового сигнала
+// Generation clock signal
 //===============================================
 reg [15:0] carrier_cnt;
 reg carrier_36k;
@@ -52,7 +52,7 @@ always @(posedge clk or posedge rst) begin
 end
  
 //===============================================
-// Конечный автомат передачи
+// Transfer state machine
 //===============================================
 reg [31:0] shift_reg;
 reg [5:0]  bit_cnt;
@@ -116,7 +116,7 @@ always @(posedge clk or posedge rst) begin
                 ir_output <= 1'b0;
                 if(main_cnt == (shift_reg[0] ? (DATA_DIV*3)-1 : DATA_DIV-1)) begin 
                     main_cnt <= 0;
-                    shift_reg <= {1'b0, shift_reg[31:1]}; // добавляет 0 слева
+                    shift_reg <= {1'b0, shift_reg[31:1]}; // shift right with 0
                     bit_cnt   <= bit_cnt + 1;
                     if(bit_cnt == 32) begin
                         state <= GAP; 
