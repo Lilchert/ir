@@ -33,19 +33,19 @@ always @(posedge clk25 or posedge rst) begin
 		valid   <= 1'b0;
 	end else begin
 		valid   <= 1'b0;
-		if (button_pressed[0] && ready) begin
+		if (button_pressed[0]) begin
 			cmd_reg <= 32'b10011101011000100000011100000111; // Right
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[1] && ready) begin
+		else if (button_pressed[1]) begin
 			cmd_reg <= 32'b10011111011000000000011100000111; // Up
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[2] && ready) begin
+		else if (button_pressed[2]) begin
 			cmd_reg <= 32'b10011110011000010000011100000111; // Down
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[3] && ready) begin
+		else if (button_pressed[3]) begin
 			cmd_reg <= 32'b10011010011001010000011100000111; // Left
 			valid   <= 1'b1;
 		end
