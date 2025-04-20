@@ -23,11 +23,11 @@ localparam [2:0]
 localparam
     CLK_FREQ     = 25_000_000,
     CARRIER_FREQ = 36_000,
-    DATA_RATE    = 1200,
+    DATA_RATE    = 900,
 
     CARRIER_DIV = CLK_FREQ/(CARRIER_FREQ*2), // 347
     DATA_DIV    = CLK_FREQ/(DATA_RATE*2), // 10416
-    START_TICKS = CLK_FREQ*1000000/4370, // 109250 (4,37475ms)
+	START_TICKS = CLK_FREQ/1000000*4500, // 125000 (4,5 ms)
     STOP_TICKS  = CLK_FREQ/10; // 2500000 (100 ms)
 //===============================================
 // Генерация тактовых сигналов
@@ -69,7 +69,7 @@ always @(posedge clk or posedge rst) begin
 end
 
 // Комбинированный сигнал модуляции
-wire modulation = carrier_36k & carrier_1200;
+wire modulation = carrier_36k; // & carrier_1200;
 
 //===============================================
 // Конечный автомат передачи
