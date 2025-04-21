@@ -8,7 +8,7 @@ module ir_encoder (
 );
 
 //===============================================
-// Параметры состояний
+// State parameters
 //===============================================
 localparam [2:0]
     IDLE        = 3'd0,    // Waiting for command
@@ -18,7 +18,7 @@ localparam [2:0]
     PAUSE       = 3'd4,    // Pause between bits
     GAP		= 3'd5;    // Pause between commands
 //===============================================
-// Параметры временных интервалов
+// Time interval parameters
 //===============================================
 localparam
     //CLK_FREQ     = 25_000_000, Clock frequency
