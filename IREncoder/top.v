@@ -11,21 +11,21 @@ wire ready;
 wire ir_out;
 reg valid;
 
-wire [3:0] button_pressed;
+//wire [3:0] button_pressed;
 
-genvar i;
-generate
-	for (i=0; i<4; i=i+1) begin: debouncers
-		debouncer debounce_inst (
-		   .clk(clk25),
-		   .rst(rst),
-		   .button_in(key[i]),
-		   .button_pressed(button_pressed[i]),
-		   .button_state(),
-		   .button_released()
-	   	);
-	end
-endgenerate
+//genvar i;
+//generate
+//	for (i=0; i<4; i=i+1) begin: debouncers
+//		debouncer debounce_inst (
+//		   .clk(clk25),
+//		   .rst(rst),
+//		   .button_in(key[i]),
+//		   .button_pressed(button_pressed[i]),
+//		   .button_state(),
+//		   .button_released()
+//	   	);
+//	end
+//endgenerate
 
 always @(posedge clk25 or posedge rst) begin
 	if (rst) begin
@@ -33,19 +33,19 @@ always @(posedge clk25 or posedge rst) begin
 		valid   <= 1'b0;
 	end else begin
 		valid   <= 1'b0;
-		if (button_pressed[0]) begin
+		if (key[0]) begin
 			cmd_reg <= 32'b10011101011000100000011100000111; // Right
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[1]) begin
+		else if (key[1]) begin
 			cmd_reg <= 32'b10011111011000000000011100000111; // Up
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[2]) begin
+		else if (key[2]) begin
 			cmd_reg <= 32'b10011110011000010000011100000111; // Down
 			valid   <= 1'b1;
 		end
-		else if (button_pressed[3]) begin
+		else if (key[3]) begin
 			cmd_reg <= 32'b10011010011001010000011100000111; // Left
 			valid   <= 1'b1;
 		end
