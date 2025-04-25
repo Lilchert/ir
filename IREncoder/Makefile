@@ -1,7 +1,7 @@
 NAME = ir_encoder
 VERILOG += top.v
 VERILOG += ir_encoder.v 
-VERILOG += debouncer.v
+//VERILOG += debouncer.v
 INC = ./
 LPF = karnix_cabga256.lpf
 DEVICE = 25k
