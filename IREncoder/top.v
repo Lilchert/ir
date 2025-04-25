@@ -27,8 +27,29 @@ generate
 	   	);
 	end
 endgenerate
+
+localparam CARRIER_DIV = 12500000 - 1;
 	
+reg [23:0] carrier_cnt;
+reg slow_clock;
+
+// Генерация 1 Гц
 always @(posedge clk25 or posedge rst) begin
+    if(rst) begin
+        carrier_cnt <= 0;
+        slow_clock <= 0;
+    end else begin
+        if(carrier_cnt >= CARRIER_DIV) begin
+            carrier_cnt <= 0;
+            slow_clock <= ~slow_clock;
+        end else begin
+            carrier_cnt <= carrier_cnt + 1;
+        end
+    end
+end
+
+	
+always @(posedge slow_clock or posedge rst) begin
 	if (rst) begin
 		cmd_reg <= 0;
 		valid   <= 1'b0;
@@ -40,18 +61,18 @@ always @(posedge clk25 or posedge rst) begin
 			button_state <= 0;
 		end
 		else if (button_state[1]) begin
-			cmd_reg <= 32'b10011111011000000000011100000111; // Up
-			valid   <= 1'b1;
+			cmd_reg      <= 32'b10011111011000000000011100000111; // Up
+			valid        <= 1'b1;
 			button_state <= 0;
 		end
 		else if (button_state[2]) begin
-			cmd_reg <= 32'b10011110011000010000011100000111; // Down
-			valid   <= 1'b1;
+			cmd_reg      <= 32'b10011110011000010000011100000111; // Down
+			valid        <= 1'b1;
 			button_state <= 0;
 		end
 		else if (button_state[3]) begin
-			cmd_reg <= 32'b10011010011001010000011100000111; // Left
-			valid   <= 1'b1;
+			cmd_reg      <= 32'b10011010011001010000011100000111; // Left
+			valid        <= 1'b1;
 			button_state <= 0;
 		end
 	end
