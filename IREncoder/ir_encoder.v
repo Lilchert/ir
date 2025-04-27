@@ -36,7 +36,7 @@ localparam
 reg [15:0] carrier_cnt;
 reg carrier_36k;
 
-// Генерация 36 кГц
+// Generation 36 kHz
 always @(posedge clk or posedge rst) begin
     if(rst) begin
         carrier_cnt <= 0;
