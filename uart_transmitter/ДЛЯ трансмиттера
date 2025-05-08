@@ -1,7 +1,0 @@
-sudo screen /dev/ttyUSB1 115200
-
-Выход из screen
-
-Нажмите Ctrl + A, затем K, и подтвердите выход (y).
-
-
