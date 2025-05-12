@@ -1,0 +1,38 @@
+module top (
+        input wire clk25,
+	input wire uart_debug_rxd,
+	input wire [0:0] key,
+        output wire [3:0] led
+);
+
+wire [31:0] baudrate  = 32'd115200;
+
+wire rst;
+assign rst = key[0];
+reg [7:0] rx_data;
+
+uart_rx uart_main (
+    .rst            (rst),
+    .clk            (clk25),
+    .rx             (uart_debug_rxd),
+    .baudrate       (baudrate),
+    .valid          (1'b1),
+    .stop_bits      (2'd0),
+    .parity_en      (1'b1),
+    .parity_type    (1'b0),
+    .parity_valid   (led[0]),
+    .ready          (led[1]),
+    .rx_data_output (rx_data)
+);
+
+reg [1:0] led_reg;
+
+always @(posedge clk25) begin
+	if (rx_data == 8'h41) led_reg[0] <= 1;
+	else if (rx_data == 8'h42) led_reg[1] <= 1;
+end
+
+assign led[2] = led_reg[0];
+assign led[3] = led_reg[1];
+
+endmodule
