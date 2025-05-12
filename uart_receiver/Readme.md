@@ -1,4 +1,4 @@
-sudo screen /dev/ttyUSB0 115200,cs8,even,ixoff,-istrip
+sudo screen /dev/ttyUSB1 115200,cs8,even,ixoff,-istrip
 # Для screen (параметры: скорость, четность, стоп-биты)
     /dev/ttyUSB0 - UART-устройство
 
@@ -12,7 +12,7 @@ sudo screen /dev/ttyUSB0 115200,cs8,even,ixoff,-istrip
 
     -istrip - не обрезать 8-й бит
 
-screen /dev/ttyUSB0 115200,cs8,even,ixoff,-istrip,-cstopb
+screen /dev/ttyUSB1 115200,cs8,even,ixoff,-istrip,-cstopb
 
     -cstopb = 1 стоп-бит (по умолчанию)
 
